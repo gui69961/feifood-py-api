@@ -1,7 +1,9 @@
 """Catalog Service: cadastro de restaurantes e produtos do Feifood."""
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -16,6 +18,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Feifood · Catalog Service", version="1.0.0", lifespan=lifespan)
+
+# CORS: permite que a interface web (outra porta) converse com a API pelo navegador.
+# Em produção, defina CORS_ORIGINS com os endereços permitidos, separados por vírgula.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")

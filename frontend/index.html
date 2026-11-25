@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feifood · Peça sua comida</title>
+  <meta name="description" content="Interface web do Feifood: restaurantes, cardápio, carrinho e acompanhamento de pedidos." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="#" id="brand" aria-label="Feifood, página inicial">
+        <span class="brand__logo">F</span>
+        <span class="brand__name">Fei<b>food</b></span>
+      </a>
+
+      <nav class="nav" aria-label="Navegação principal">
+        <button class="nav__btn is-active" data-view="restaurants">Restaurantes</button>
+        <button class="nav__btn" data-view="orders">Meus pedidos</button>
+        <button class="nav__btn" data-view="admin">Gerenciar</button>
+      </nav>
+
+      <div class="topbar__right">
+        <div class="status" title="Estado dos microsserviços">
+          <span class="status__item"><i class="dot" id="dot-catalog"></i>Catálogo</span>
+          <span class="status__item"><i class="dot" id="dot-orders"></i>Pedidos</span>
+        </div>
+        <button class="cart-btn" id="cart-open" aria-label="Abrir carrinho">
+          🛒 <span>Carrinho</span> <b class="cart-btn__count" id="cart-count">0</b>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="container" aria-live="polite"></main>
+
+  <footer class="footer">
+    Feito por <a href="https://github.com/gui69961" target="_blank" rel="noopener">Guilherme P</a> ·
+    <a href="https://github.com/gui69961/feifood-py-api" target="_blank" rel="noopener">código no GitHub</a> ·
+    Documentação das APIs:
+    <a id="doc-catalog" target="_blank" rel="noopener">catálogo</a>,
+    <a id="doc-orders" target="_blank" rel="noopener">pedidos</a>
+  </footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart" id="cart" aria-label="Carrinho de compras">
+    <div class="cart__head">
+      <h2>Seu pedido</h2>
+      <button class="icon-btn" id="cart-close" aria-label="Fechar carrinho">✕</button>
+    </div>
+    <div class="cart__body" id="cart-body"></div>
+    <div class="cart__foot" id="cart-foot"></div>
+  </aside>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

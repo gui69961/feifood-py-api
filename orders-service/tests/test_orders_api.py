@@ -94,3 +94,20 @@ def test_cannot_cancel_delivered_order(client):
 
 def test_update_status_of_missing_order_returns_404(client):
     assert client.patch("/orders/999/status", json={"status": "PREPARANDO"}).status_code == 404
+
+
+
+def test_cors_allows_browser_requests_and_preflight(client):
+    response = client.get("/health", headers={"Origin": "http://localhost:8080"})
+    assert response.headers["access-control-allow-origin"] == "*"
+
+    preflight = client.options(
+        "/orders/1/status",
+        headers={
+            "Origin": "http://localhost:8080",
+            "Access-Control-Request-Method": "PATCH",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert preflight.status_code == 200
+    assert "PATCH" in preflight.headers["access-control-allow-methods"]

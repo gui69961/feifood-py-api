@@ -82,3 +82,8 @@ def test_get_product_by_id(client):
 
 def test_get_missing_product_returns_404(client):
     assert client.get("/products/999").status_code == 404
+
+
+def test_cors_allows_browser_requests(client):
+    response = client.get("/health", headers={"Origin": "http://localhost:8080"})
+    assert response.headers["access-control-allow-origin"] == "*"

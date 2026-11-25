@@ -1,4 +1,4 @@
-# Sobe os dois microsserviços juntos: docker compose up --build
+# Sobe a interface web e os dois microsserviços juntos: docker compose up --build
 services:
   catalog:
     build: ./catalog-service
@@ -20,6 +20,14 @@ services:
       - orders-data:/data
     depends_on:
       - catalog
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - catalog
+      - orders
 
 volumes:
   catalog-data:
