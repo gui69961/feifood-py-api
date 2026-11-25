@@ -1,0 +1,26 @@
+# Sobe os dois microsserviços juntos: docker compose up --build
+services:
+  catalog:
+    build: ./catalog-service
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: sqlite:////data/catalog.db
+    volumes:
+      - catalog-data:/data
+
+  orders:
+    build: ./orders-service
+    ports:
+      - "8002:8002"
+    environment:
+      DATABASE_URL: sqlite:////data/orders.db
+      CATALOG_URL: http://catalog:8001   # o nome do serviço vira o endereço na rede do Docker
+    volumes:
+      - orders-data:/data
+    depends_on:
+      - catalog
+
+volumes:
+  catalog-data:
+  orders-data:
