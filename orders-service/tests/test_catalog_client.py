@@ -13,18 +13,29 @@ def test_returns_product_when_found():
         assert request.url.path == "/products/1"
         return httpx.Response(200, json={"id": 1, "name": "X-Burguer", "price": 22.5})
 
-    assert client_with(handler).get_product(1)["name"] == "X-Burguer"
+    assert client_with(handler).get_product(1, "meu-token")["name"] == "X-Burguer"
+
+
+def test_forwards_the_user_token_to_the_catalog():
+    seen = {}
+
+    def handler(request):
+        seen["auth"] = request.headers.get("authorization")
+        return httpx.Response(200, json={"id": 1, "name": "X", "price": 1})
+
+    client_with(handler).get_product(1, "abc123")
+    assert seen["auth"] == "Bearer abc123"
 
 
 def test_returns_none_when_not_found():
     client = client_with(lambda request: httpx.Response(404, json={"detail": "x"}))
-    assert client.get_product(99) is None
+    assert client.get_product(99, "meu-token") is None
 
 
 def test_raises_when_catalog_returns_server_error():
     client = client_with(lambda request: httpx.Response(500))
     with pytest.raises(CatalogUnavailable):
-        client.get_product(1)
+        client.get_product(1, "meu-token")
 
 
 def test_raises_when_catalog_is_unreachable():
@@ -32,4 +43,4 @@ def test_raises_when_catalog_is_unreachable():
         raise httpx.ConnectError("sem conexão")
 
     with pytest.raises(CatalogUnavailable):
-        client_with(handler).get_product(1)
+        client_with(handler).get_product(1, "meu-token")

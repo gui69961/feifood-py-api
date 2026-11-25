@@ -16,7 +16,11 @@ class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    customer: Mapped[str] = mapped_column(String(100))
+    customer: Mapped[str] = mapped_column(String(100))  # nome do cliente no momento do pedido
+    customer_id: Mapped[int] = mapped_column(index=True)  # id do cliente no Auth Service
+    restaurant_id: Mapped[int]
+    restaurant_name: Mapped[str] = mapped_column(String(100))
+    owner_id: Mapped[int] = mapped_column(index=True)  # id do lojista dono do restaurante
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.CRIADO.value)
     total: Mapped[float] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

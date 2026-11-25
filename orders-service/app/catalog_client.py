@@ -13,11 +13,16 @@ class CatalogClient:
         self.base_url = base_url or os.getenv("CATALOG_URL", "http://localhost:8001")
         self.transport = transport  # permite trocar a rede real por uma falsa nos testes
 
-    def get_product(self, product_id: int) -> dict | None:
-        """Busca um produto no catálogo. Retorna None se ele não existir."""
+    def get_product(self, product_id: int, token: str) -> dict | None:
+        """Busca um produto no catálogo, repassando o token de login do usuário.
+
+        Retorna None se o produto não existir.
+        """
         try:
             with httpx.Client(base_url=self.base_url, timeout=3.0, transport=self.transport) as http:
-                response = http.get(f"/products/{product_id}")
+                response = http.get(
+                    f"/products/{product_id}", headers={"Authorization": f"Bearer {token}"}
+                )
         except httpx.RequestError as error:
             raise CatalogUnavailable(str(error)) from error
 

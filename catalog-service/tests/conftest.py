@@ -6,6 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
+from tests.helpers import make_headers
 
 
 @pytest.fixture()
@@ -27,3 +28,21 @@ def client():
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def owner():
+    """Lojista com id 10."""
+    return make_headers(10, "LOJISTA", "Dona Maria")
+
+
+@pytest.fixture()
+def other_owner():
+    """Outro lojista, com id 11."""
+    return make_headers(11, "LOJISTA", "Seu João")
+
+
+@pytest.fixture()
+def customer():
+    """Cliente com id 1."""
+    return make_headers(1, "CLIENTE", "Ana")

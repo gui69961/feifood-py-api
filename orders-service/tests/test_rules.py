@@ -1,6 +1,6 @@
 import pytest
 
-from app.rules import OrderStatus, calculate_total, can_transition
+from app.rules import OrderStatus, calculate_total, can_actor_change, can_transition
 
 
 @pytest.mark.parametrize("current,new", [
@@ -35,3 +35,26 @@ def test_calculate_total_rounds_to_two_decimals():
 
 def test_calculate_total_of_empty_list_is_zero():
     assert calculate_total([]) == 0
+
+
+# ---------- quem pode fazer cada mudança ----------
+@pytest.mark.parametrize("current,new", [
+    (OrderStatus.CRIADO, OrderStatus.PREPARANDO),
+    (OrderStatus.PREPARANDO, OrderStatus.A_CAMINHO),
+    (OrderStatus.A_CAMINHO, OrderStatus.ENTREGUE),
+    (OrderStatus.CRIADO, OrderStatus.CANCELADO),
+    (OrderStatus.PREPARANDO, OrderStatus.CANCELADO),
+])
+def test_owner_can_drive_the_order(current, new):
+    assert can_actor_change("LOJISTA", current, new)
+
+
+def test_customer_can_only_cancel_before_the_restaurant_accepts():
+    assert can_actor_change("CLIENTE", OrderStatus.CRIADO, OrderStatus.CANCELADO)
+    assert not can_actor_change("CLIENTE", OrderStatus.PREPARANDO, OrderStatus.CANCELADO)
+    assert not can_actor_change("CLIENTE", OrderStatus.CRIADO, OrderStatus.PREPARANDO)
+    assert not can_actor_change("CLIENTE", OrderStatus.A_CAMINHO, OrderStatus.ENTREGUE)
+
+
+def test_unknown_role_can_do_nothing():
+    assert not can_actor_change("VISITANTE", OrderStatus.CRIADO, OrderStatus.CANCELADO)

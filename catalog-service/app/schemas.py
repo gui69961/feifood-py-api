@@ -10,6 +10,7 @@ class RestaurantCreate(BaseModel):
 class RestaurantOut(RestaurantCreate):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    owner_id: int
 
 
 class ProductCreate(BaseModel):
@@ -21,3 +22,5 @@ class ProductOut(ProductCreate):
     model_config = ConfigDict(from_attributes=True)
     id: int
     restaurant_id: int
+    restaurant_name: str
+    owner_id: int

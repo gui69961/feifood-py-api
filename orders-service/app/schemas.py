@@ -11,7 +11,7 @@ class OrderItemIn(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    customer: str = Field(min_length=1, max_length=100)
+    # O cliente vem do token de login: não é mais enviado no corpo da requisição.
     items: list[OrderItemIn] = Field(min_length=1)
 
 
@@ -27,6 +27,8 @@ class OrderOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     customer: str
+    restaurant_id: int
+    restaurant_name: str
     status: OrderStatus
     total: float
     created_at: datetime
